@@ -120,6 +120,6 @@ public class Game implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(player1, player2, new Random().nextInt());
+        return Objects.hash(player1, player2);
     }
 }
