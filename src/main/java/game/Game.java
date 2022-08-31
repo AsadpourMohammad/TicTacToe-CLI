@@ -1,6 +1,10 @@
 package game;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.Random;
 
 import static utils.ConsoleColors.*;
@@ -14,7 +18,7 @@ public class Game implements Serializable {
 
     private String winner;
 
-    private final int gameNum;
+    private final String gameName;
 
     private final String[] board;
     private String gameBoard;
@@ -25,7 +29,11 @@ public class Game implements Serializable {
         this.player1 = player1;
         this.player2 = player2;
         this.turn = this.player1;
-        this.gameNum = new Random().nextInt();
+        this.gameName =
+                StringUtils.capitalize(player1.name().substring(7, player1.name().length() - 4).toLowerCase(Locale.ROOT)) +
+                StringUtils.capitalize(player2.name().substring(7, player2.name().length() - 4).toLowerCase(Locale.ROOT)) +
+                hashCode();
+
         this.board = new String[]{
                 WHITE_BOLD_BRIGHT + "1" + RESET,
                 WHITE_BOLD_BRIGHT + "2" + RESET,
@@ -37,10 +45,6 @@ public class Game implements Serializable {
                 WHITE_BOLD_BRIGHT + "8" + RESET,
                 WHITE_BOLD_BRIGHT + "9" + RESET};
         setGameBoard();
-    }
-
-    public int getGameNum() {
-        return gameNum;
     }
 
     public Player getPlayer1() {
@@ -65,6 +69,10 @@ public class Game implements Serializable {
 
     public String getWinner() {
         return winner;
+    }
+
+    public String getGameName() {
+        return gameName;
     }
 
     public void setGameBoard() {
@@ -108,5 +116,10 @@ public class Game implements Serializable {
 
                 (board[0].equals(turn.symbol().getSymbol()) && board[4].equals(turn.symbol().getSymbol()) && board[8].equals(turn.symbol().getSymbol())) ||
                 (board[2].equals(turn.symbol().getSymbol()) && board[4].equals(turn.symbol().getSymbol()) && board[6].equals(turn.symbol().getSymbol()));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(player1, player2, new Random().nextInt());
     }
 }

@@ -1,15 +1,14 @@
 package cli;
 
+import file.MyFile;
 import game.Game;
 import game.Player;
 import game.Symbol;
-import file.MyFile;
 import org.apache.commons.lang3.math.NumberUtils;
-
-import static utils.ConsoleColors.*;
-
 import java.util.Locale;
 import java.util.Scanner;
+
+import static utils.ConsoleColors.*;
 
 public class CLI {
     private static Game game;
@@ -47,6 +46,7 @@ public class CLI {
     }
 
     public static String announceTurn() {
+
         return String.format("%s %s--%s", game.getTurn(), WHITE_BOLD_BRIGHT, RESET);
     }
 
@@ -94,7 +94,7 @@ public class CLI {
     public static String save() {
         MyFile.writeGame(game);
 
-        return String.format(BLUE_BOLD_BRIGHT + "GAME SAVED AS 'game%s'." + RESET, game.getGameNum());
+        return String.format(BLUE_BOLD_BRIGHT + "GAME SAVED AS '%s'." + RESET, game.getGameName());
     }
 
     public static void main(String[] args) {

@@ -8,7 +8,7 @@ public class MyFile {
     public static String path = System.getProperty("user.dir") + "\\gameFiles";
 
     public static void writeGame(Game game) {
-        String newPath = path + String.format("\\game%s.txt", game.getGameNum());
+        String newPath = path + String.format("\\%s.txt", game.getGameName());
 
         boolean temp = new File(path).mkdir();
 
