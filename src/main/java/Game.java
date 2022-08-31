@@ -1,6 +1,8 @@
 import org.apache.commons.lang3.math.NumberUtils;
 
-public class Game {
+import java.io.Serializable;
+
+public class Game implements Serializable {
     private final Player player1;
     private final Player player2;
 
@@ -8,7 +10,6 @@ public class Game {
     private String turnSymbol;
 
     private final int gameNumber;
-    private static int gameNum = MyFile.gameNum();
 
     private final String[] board;
     private String gameBoard;
@@ -17,39 +18,18 @@ public class Game {
         this.player1 = player1;
         this.player2 = player2;
         this.turn = this.player1;
+
         this.turnSymbol = "X";
-        gameNumber = gameNum;
-        gameNum++;
+        this.gameNumber = MyFile.gameNum() + 1;
 
         board = new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9"};
 
         gameBoard = String.format("""
-            |---|---|---|
-            | %s | %s | %s |
-            |-----------|
-            | %s | %s | %s |
-            |-----------|
-            | %s | %s | %s |
-            |---|---|---|
-            """, (Object[]) board);
-    }
-
-    public Game(Player player1, Player player2, Player turn, int gameNumber, String[] board) {
-        this.player1 = player1;
-        this.player2 = player2;
-        this.turn = turn;
-        setTurn();
-        this.gameNumber = gameNumber;
-        this.board = board;
-
-        gameBoard = String.format("""
-            |---|---|---|
-            | %s | %s | %s |
-            |-----------|
-            | %s | %s | %s |
-            |-----------|
-            | %s | %s | %s |
-            |---|---|---|
+             %s | %s | %s
+            -- + - + --
+             %s | %s | %s
+            -- + - + --
+             %s | %s | %s
             """, (Object[]) board);
     }
 
@@ -69,6 +49,20 @@ public class Game {
         return turn;
     }
 
+    public String getGameBoard() {
+        return gameBoard;
+    }
+
+    public void setGameBoard() {
+        this.gameBoard = String.format("""
+             %s | %s | %s
+            -- + - + --
+             %s | %s | %s
+            -- + - + --
+             %s | %s | %s
+            """, (Object[]) board);
+    }
+
     public void setTurn() {
         if (turn == player1) {
             turn = player2;
@@ -83,22 +77,23 @@ public class Game {
     public String set(String n) {
         if (gameBoard.contains(String.valueOf(n))) {
             board[Integer.parseInt(n)-1] = String.valueOf(turnSymbol);
-            gameBoard = gameBoard.replace(n.charAt(0), turnSymbol.charAt(0));
+            setGameBoard();
 
             if (hasContestantWon()) {
                 return gameBoard + String.format("%s has won the game. Game finished.",turn);
-            }
-
-            if (isTheGameOver()) {
+            } else if (isTheGameOver()) {
                 return gameBoard + "Game finished with a tie.";
-            }
-            setTurn();
-            return gameBoard + String.format("""
+            } else {
+                setTurn();
+                return gameBoard + String.format("""
                 %s, please make your move.
                 """, turn);
-        }
-        else
+            }
+
+        } else if (NumberUtils.isCreatable(n)) {
             return "You can't mark there. Please chose another place.";
+        } else
+            return "Please enter a valid number.";
     }
 
     public boolean isTheGameOver() {
@@ -106,14 +101,6 @@ public class Game {
             if (NumberUtils.isCreatable(board[i])) return false;
         }
         return true;
-    }
-
-    public String getGameBoard() {
-        return gameBoard;
-    }
-
-    public String[] getBoard() {
-        return board;
     }
 
     public boolean hasContestantWon() {

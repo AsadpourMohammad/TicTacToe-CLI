@@ -13,7 +13,6 @@
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -30,7 +29,6 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.12.0</version>
         </dependency>
-
     </dependencies>
 
 </project>

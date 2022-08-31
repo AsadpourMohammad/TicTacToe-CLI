@@ -1,12 +1,12 @@
-import java.io.IOException;
 import java.util.Locale;
 import java.util.Scanner;
 
 public class CLI {
     private static Game game;
 
-    public static String run(String cmd) throws IOException {
+    public static String run(String cmd) {
         if (cmd.isEmpty()) return "";
+
 
         String[] tokens = cmd.split("\\s+");
 
@@ -20,15 +20,13 @@ public class CLI {
             return load(tokens[1]);
         }
         else if (tokens[0].equals("/save") && tokens.length == 1) {
-            return save("save");
+            return save();
         } else
             return "Command was not understood.";
     }
 
-    public static String start(Player player1, Player player2) throws IOException {
+    public static String start(Player player1, Player player2) {
         game = new Game(player1,player2);
-
-        MyFile.startGame(String.valueOf(game.getGameNumber()), game);
 
         return String.format("""
                 New game began between %s and %s.
@@ -36,11 +34,13 @@ public class CLI {
                 """, game.getPlayer1(), game.getPlayer2(), game.getTurn()) + game.getGameBoard();
     }
 
-    public static String load(String gameName) throws IOException {
-        game = MyFile.loadGame(gameName);
+    public static String load(String gameName) {
+        game = MyFile.readGame(gameName);
 
-        if (game.hasContestantWon()) {
-            return game.getGameBoard() + String.format("%s won this game.",game.getTurn());
+        if (game == null) {
+            return "No such game was found.";
+        } else if (game.hasContestantWon()) {
+            return game.getGameBoard() + String.format("This game finished with %s winning this game.",game.getTurn());
         } else if (game.isTheGameOver()) {
             return game.getGameBoard() + "The game finished with a tie.";
         } else return String.format("""
@@ -50,25 +50,25 @@ public class CLI {
     }
 
     public static String put(String n) {
-        return game.set(n);
+        String setReturned = game.set(n);
+
+        if (setReturned.contains("finished"))
+            finished();
+
+        return setReturned;
     }
 
-    public static String save(String situation) throws IOException {
-        MyFile.writer.write(game.getPlayer1().toString() + " " +  game.getPlayer2().toString() + "\n");
-        MyFile.writeBoard(game.getBoard());
-        MyFile.writer.write("Turn = " + game.getTurn());
-        MyFile.writer.close();
+    public static String save() {
+        MyFile.writeGame(String.valueOf(game.getGameNumber()), game);
 
-        if (situation.equals("finished")) {
-            return "";
-        } else if (situation.equals("save")) {
-            return String.format("Game saved for later. Your game is named 'game%s'.", game.getGameNumber()) ;
-        }
-
-        return "";
+        return String.format("Game saved for later. Your game is named 'game%s'.", game.getGameNumber());
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void finished() {
+        MyFile.writeGame(String.valueOf(game.getGameNumber()), game);
+    }
+
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
         String input;
@@ -80,15 +80,8 @@ public class CLI {
             input = scanner.nextLine();
             output = CLI.run(input.trim().toLowerCase(Locale.ROOT));
 
-            if (output.contains("finished")) {
+            if (output.contains("finished") || output.contains("saved")) {
                 System.out.println(output);
-                CLI.save("finished");
-                break;
-            } else if (output.contains("Game saved")) {
-                System.out.println(output);
-                try {
-                    CLI.save("save");
-                } catch (IOException ignored) {}
                 break;
             } else if (output.equals("")) {
                 continue;
