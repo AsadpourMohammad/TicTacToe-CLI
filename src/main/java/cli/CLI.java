@@ -105,7 +105,7 @@ public class CLI {
         String output;
 
         while (true) {
-            System.out.printf("%s>%s", WHITE_BOLD_BRIGHT, RESET);
+            System.out.printf("%s>%s ", WHITE_BOLD_BRIGHT, RESET);
 
             input = scanner.nextLine();
             output = CLI.run(input.trim().toLowerCase(Locale.ROOT));

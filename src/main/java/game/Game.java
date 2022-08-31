@@ -78,9 +78,9 @@ public class Game implements Serializable {
     public void setGameBoard() {
         this.gameBoard = String.format("""
                          %3$2s %1$2s|%2$2s %4$2s %1$2s|%2$2s %5$2s
-                        %1$s-- + - + --%2$s
+                        %1$s — + — + —%2$s
                          %6$2s %1$2s|%2$2s %7$2s %1$2s|%2$2s %8$2s
-                        %1$s-- + - + --%2$s
+                        %1$s — + — + —%2$s
                          %9$2s %1$2s|%2$2s %10$2s %1$2s|%2$2s %11$2s""", CYAN_BOLD_BRIGHT, RESET,
                 board[0], board[1], board[2], board[3], board[4], board[5], board[6], board[7], board[8]);
     }
