@@ -14,6 +14,8 @@ public class Game implements Serializable {
     private final String[] board;
     private String gameBoard;
 
+    private boolean ended = false;
+
     public Game(Player player1, Player player2) {
         this.player1 = player1;
         this.player2 = player2;
@@ -74,14 +76,20 @@ public class Game implements Serializable {
         }
     }
 
+    public boolean isEnded() {
+        return ended;
+    }
+
     public String set(String n) {
-        if (gameBoard.contains(String.valueOf(n))) {
+        if (gameBoard.contains(n)) {
             board[Integer.parseInt(n)-1] = String.valueOf(turnSymbol);
             setGameBoard();
 
             if (hasContestantWon()) {
+                ended = true;
                 return gameBoard + String.format("%s has won the game. Game finished.",turn);
             } else if (isTheGameOver()) {
+                ended = true;
                 return gameBoard + "Game finished with a tie.";
             } else {
                 setTurn();
@@ -97,9 +105,9 @@ public class Game implements Serializable {
     }
 
     public boolean isTheGameOver() {
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 9; i++)
             if (NumberUtils.isCreatable(board[i])) return false;
-        }
+
         return true;
     }
 

@@ -52,7 +52,7 @@ public class CLI {
     public static String put(String n) {
         String setReturned = game.set(n);
 
-        if (setReturned.contains("finished"))
+        if (game.isEnded())
             finished();
 
         return setReturned;
